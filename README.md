@@ -291,16 +291,7 @@ phpunit tests/
 - ✅ Admin dashboard
 - ✅ Multi-currency support
 
-## License
-
-This extension is licensed under the [MIT License](LICENSE).
-Copyright (c) 2024 Vivian Akpoke
-
-## Disclaimer
-
 This extension is provided "as is" without warranty of any kind. Use at your own risk. Always test thoroughly in a development environment before deploying to production.
-
----
 
 **Developed by Vivian Akpoke**
 
