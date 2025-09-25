@@ -1,0 +1,35 @@
+{
+    "extension_id": "paystack",
+    "type": "payment",
+    "version": "1.0.0",
+    "opencart_version": "4.0.0.0",
+    "name": "Paystack Payment Gateway",
+    "description": "Accept payments via Paystack - Cards, Bank Transfer, USSD, QR Code and more",
+    "author": "Vivian Akpoke",
+    "link": "https://paystack.com",
+    "license": "MIT",
+    "support": {
+        "email": "vivian.akpoke@example.com",
+        "documentation": "https://github.com/vivianakpoke/paystack-opencart4"
+    },
+    "requirements": {
+        "php": "8.0.0",
+        "opencart": "4.0.0.0",
+        "extensions": ["curl", "json", "openssl"]
+    },
+    "files": [
+        "admin/controller/payment/paystack.php",
+        "admin/language/en-gb/payment/paystack.php",
+        "admin/model/payment/paystack.php",
+        "admin/view/template/payment/paystack.twig",
+        "catalog/controller/payment/paystack.php",
+        "catalog/language/en-gb/payment/paystack.php",
+        "catalog/model/payment/paystack.php",
+        "catalog/view/template/payment/paystack.twig",
+        "system/library/paystack.php"
+    ],
+    "database": {
+        "install": "install.sql",
+        "uninstall": "uninstall.sql"
+    }
+}

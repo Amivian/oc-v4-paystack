@@ -1,0 +1,140 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+error.log
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.test
+
+# Cache and temporary files
+cache/
+temp/
+tmp/
+*.tmp
+*.cache
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# PHP specific
+composer.phar
+/phpunit.xml
+
+# Test coverage
+coverage/
+.phpunit.result.cache
+
+# Build artifacts
+build/
+dist/
+
+# Configuration files (sensitive)
+config.php
+admin/config.php
+
+# Upload directories
+image/cache/
+system/storage/
+
+# OpenCart specific
+system/storage/cache/
+system/storage/logs/
+system/storage/download/
+system/storage/upload/
+system/storage/modification/
+
+# Database dumps
+*.sql
+*.sqlite
+
+# Documentation build
+docs/_build/
+
+# Package files
+*.deb
+*.rpm
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+technical_brief.md

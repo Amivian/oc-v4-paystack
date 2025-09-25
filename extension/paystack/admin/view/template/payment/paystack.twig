@@ -1,0 +1,386 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-payment" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+          <i class="fas fa-save"></i>
+        </button>
+        <a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-secondary">
+          <i class="fas fa-reply"></i>
+        </a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+      <div class="alert alert-danger alert-dismissible">
+        <i class="fas fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endif %}
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-pencil-alt"></i> {{ text_edit }}
+      </div>
+      <div class="card-body">
+        <form id="form-payment" action="{{ action }}" method="post" data-oc-toggle="ajax">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" href="#tab-general" data-bs-toggle="tab">{{ tab_general }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#tab-api-settings" data-bs-toggle="tab">{{ tab_api_settings }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#tab-payment-options" data-bs-toggle="tab">{{ tab_payment_options }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#tab-order-status" data-bs-toggle="tab">{{ tab_order_status }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#tab-advanced" data-bs-toggle="tab">{{ tab_advanced }}</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <!-- General Tab -->
+            <div class="tab-pane fade show active" id="tab-general">
+              <div class="row mb-3">
+                <label for="input-status" class="col-sm-2 col-form-label">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="payment_paystack_status" value="0"/>
+                    <input type="checkbox" name="payment_paystack_status" value="1" id="input-status" class="form-check-input"{% if payment_paystack_status %} checked{% endif %}/>
+                  </div>
+                  <div class="form-text">{{ help_status|default('Enable or disable the Paystack payment method.') }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-test-mode" class="col-sm-2 col-form-label">{{ entry_test_mode }}</label>
+                <div class="col-sm-10">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="payment_paystack_test_mode" value="0"/>
+                    <input type="checkbox" name="payment_paystack_test_mode" value="1" id="input-test-mode" class="form-check-input"{% if payment_paystack_test_mode %} checked{% endif %}/>
+                  </div>
+                  <div class="form-text">{{ help_test_mode }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-sort-order" class="col-sm-2 col-form-label">{{ entry_sort_order }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="payment_paystack_sort_order" value="{{ payment_paystack_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control"/>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-geo-zone" class="col-sm-2 col-form-label">{{ entry_geo_zone }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_geo_zone_id" id="input-geo-zone" class="form-select">
+                    <option value="0">{{ text_all_zones }}</option>
+                    {% for geo_zone in geo_zones %}
+                      <option value="{{ geo_zone.geo_zone_id }}"{% if geo_zone.geo_zone_id == payment_paystack_geo_zone_id %} selected{% endif %}>{{ geo_zone.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-total" class="col-sm-2 col-form-label">{{ entry_total }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="payment_paystack_total" value="{{ payment_paystack_total }}" placeholder="{{ entry_total }}" id="input-total" class="form-control"/>
+                  <div class="form-text">{{ help_total }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- API Settings Tab -->
+            <div class="tab-pane fade" id="tab-api-settings">
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Get your API keys from your <a href="https://dashboard.paystack.com/#/settings/developer" target="_blank">Paystack Dashboard</a>
+              </div>
+              
+              <!-- Test Mode Keys -->
+              <fieldset>
+                <legend>{{ text_test }} {{ tab_api_settings }}</legend>
+                <div class="row mb-3">
+                  <label for="input-test-secret-key" class="col-sm-2 col-form-label">{{ entry_test_secret_key }}</label>
+                  <div class="col-sm-10">
+                    <input type="password" name="payment_paystack_test_secret_key" value="{{ payment_paystack_test_secret_key }}" placeholder="{{ entry_test_secret_key }}" id="input-test-secret-key" class="form-control{% if error_test_secret_key %} is-invalid{% endif %}"/>
+                    {% if error_test_secret_key %}
+                      <div class="invalid-feedback">{{ error_test_secret_key }}</div>
+                    {% endif %}
+                    <div class="form-text">{{ help_test_secret_key }}</div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="input-test-public-key" class="col-sm-2 col-form-label">{{ entry_test_public_key }}</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="payment_paystack_test_public_key" value="{{ payment_paystack_test_public_key }}" placeholder="{{ entry_test_public_key }}" id="input-test-public-key" class="form-control{% if error_test_public_key %} is-invalid{% endif %}"/>
+                    {% if error_test_public_key %}
+                      <div class="invalid-feedback">{{ error_test_public_key }}</div>
+                    {% endif %}
+                    <div class="form-text">{{ help_test_public_key }}</div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Live Mode Keys -->
+              <fieldset>
+                <legend>{{ text_live }} {{ tab_api_settings }}</legend>
+                <div class="row mb-3">
+                  <label for="input-live-secret-key" class="col-sm-2 col-form-label">{{ entry_live_secret_key }}</label>
+                  <div class="col-sm-10">
+                    <input type="password" name="payment_paystack_live_secret_key" value="{{ payment_paystack_live_secret_key }}" placeholder="{{ entry_live_secret_key }}" id="input-live-secret-key" class="form-control{% if error_live_secret_key %} is-invalid{% endif %}"/>
+                    {% if error_live_secret_key %}
+                      <div class="invalid-feedback">{{ error_live_secret_key }}</div>
+                    {% endif %}
+                    <div class="form-text">{{ help_live_secret_key }}</div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="input-live-public-key" class="col-sm-2 col-form-label">{{ entry_live_public_key }}</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="payment_paystack_live_public_key" value="{{ payment_paystack_live_public_key }}" placeholder="{{ entry_live_public_key }}" id="input-live-public-key" class="form-control{% if error_live_public_key %} is-invalid{% endif %}"/>
+                    {% if error_live_public_key %}
+                      <div class="invalid-feedback">{{ error_live_public_key }}</div>
+                    {% endif %}
+                    <div class="form-text">{{ help_live_public_key }}</div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="row mb-3">
+                <div class="col-sm-10 offset-sm-2">
+                  <button type="button" id="button-test-connection" class="btn btn-info">
+                    <i class="fas fa-plug"></i> {{ button_test_connection }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Options Tab -->
+            <div class="tab-pane fade" id="tab-payment-options">
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">{{ entry_payment_methods }}</label>
+                <div class="col-sm-10">
+                  {% for method_key, method_name in payment_methods %}
+                    <div class="form-check">
+                      <input type="checkbox" name="payment_paystack_payment_methods[]" value="{{ method_key }}" id="payment-method-{{ method_key }}" class="form-check-input"{% if method_key in payment_paystack_payment_methods %} checked{% endif %}/>
+                      <label for="payment-method-{{ method_key }}" class="form-check-label">{{ method_name }}</label>
+                    </div>
+                  {% endfor %}
+                  <div class="form-text">{{ help_payment_methods }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-transaction-fee" class="col-sm-2 col-form-label">{{ entry_transaction_fee }}</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" name="payment_paystack_transaction_fee" value="{{ payment_paystack_transaction_fee }}" placeholder="0" id="input-transaction-fee" class="form-control"/>
+                    <span class="input-group-text">%</span>
+                  </div>
+                  <div class="form-text">{{ help_transaction_fee }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-fee-bearer" class="col-sm-2 col-form-label">{{ entry_fee_bearer }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_fee_bearer" id="input-fee-bearer" class="form-select">
+                    {% for bearer_key, bearer_name in fee_bearer_options %}
+                      <option value="{{ bearer_key }}"{% if bearer_key == payment_paystack_fee_bearer %} selected{% endif %}>{{ bearer_name }}</option>
+                    {% endfor %}
+                  </select>
+                  <div class="form-text">{{ help_fee_bearer }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-success-message" class="col-sm-2 col-form-label">{{ entry_success_message }}</label>
+                <div class="col-sm-10">
+                  <textarea name="payment_paystack_success_message" rows="3" placeholder="{{ entry_success_message }}" id="input-success-message" class="form-control">{{ payment_paystack_success_message }}</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Status Tab -->
+            <div class="tab-pane fade" id="tab-order-status">
+              <div class="row mb-3">
+                <label for="input-pending-status" class="col-sm-2 col-form-label">{{ entry_pending_order_status }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_pending_order_status_id" id="input-pending-status" class="form-select">
+                    {% for order_status in order_statuses %}
+                      <option value="{{ order_status.order_status_id }}"{% if order_status.order_status_id == payment_paystack_pending_order_status_id %} selected{% endif %}>{{ order_status.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-completed-status" class="col-sm-2 col-form-label">{{ entry_completed_order_status }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_completed_order_status_id" id="input-completed-status" class="form-select">
+                    {% for order_status in order_statuses %}
+                      <option value="{{ order_status.order_status_id }}"{% if order_status.order_status_id == payment_paystack_completed_order_status_id %} selected{% endif %}>{{ order_status.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-failed-status" class="col-sm-2 col-form-label">{{ entry_failed_order_status }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_failed_order_status_id" id="input-failed-status" class="form-select">
+                    {% for order_status in order_statuses %}
+                      <option value="{{ order_status.order_status_id }}"{% if order_status.order_status_id == payment_paystack_failed_order_status_id %} selected{% endif %}>{{ order_status.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-refunded-status" class="col-sm-2 col-form-label">{{ entry_refunded_order_status }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_paystack_refunded_order_status_id" id="input-refunded-status" class="form-select">
+                    {% for order_status in order_statuses %}
+                      <option value="{{ order_status.order_status_id }}"{% if order_status.order_status_id == payment_paystack_refunded_order_status_id %} selected{% endif %}>{{ order_status.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Tab -->
+            <div class="tab-pane fade" id="tab-advanced">
+              <div class="row mb-3">
+                <label for="input-webhook-url" class="col-sm-2 col-form-label">{{ entry_webhook_url }}</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" value="{{ webhook_url_generated }}" id="input-webhook-url" class="form-control" readonly/>
+                    <button type="button" class="btn btn-outline-secondary" onclick="copyWebhookUrl()">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                  <div class="form-text">{{ help_webhook_url }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-custom-fields" class="col-sm-2 col-form-label">{{ entry_custom_fields }}</label>
+                <div class="col-sm-10">
+                  <textarea name="payment_paystack_custom_fields" rows="5" placeholder='[{"display_name": "Field Name", "variable_name": "field_name", "value": ""}]' id="input-custom-fields" class="form-control">{{ payment_paystack_custom_fields }}</textarea>
+                  <div class="form-text">{{ help_custom_fields }}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label for="input-debug-mode" class="col-sm-2 col-form-label">{{ entry_debug_mode }}</label>
+                <div class="col-sm-10">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="payment_paystack_debug_mode" value="0"/>
+                    <input type="checkbox" name="payment_paystack_debug_mode" value="1" id="input-debug-mode" class="form-check-input"{% if payment_paystack_debug_mode %} checked{% endif %}/>
+                  </div>
+                  <div class="form-text">{{ help_debug_mode }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+// Test API Connection
+$('#button-test-connection').on('click', function() {
+    var button = $(this);
+    var testMode = $('#input-test-mode').is(':checked');
+    var secretKey = testMode ? $('#input-test-secret-key').val() : $('#input-live-secret-key').val();
+    
+    if (!secretKey) {
+        alert('{{ error_secret_key_required }}');
+        return;
+    }
+    
+    button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Testing...');
+    
+    $.ajax({
+        url: 'index.php?route=extension/paystack/payment/paystack.testConnection&user_token={{ user_token }}',
+        type: 'POST',
+        data: {
+            secret_key: secretKey,
+            test_mode: testMode ? 1 : 0
+        },
+        dataType: 'json',
+        success: function(json) {
+            if (json.success) {
+                alert(json.success);
+            } else if (json.error) {
+                alert(json.error);
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert('Connection test failed: ' + thrownError);
+        },
+        complete: function() {
+            button.prop('disabled', false).html('<i class="fas fa-plug"></i> {{ button_test_connection }}');
+        }
+    });
+});
+
+// Copy webhook URL
+function copyWebhookUrl() {
+    var webhookUrl = document.getElementById('input-webhook-url');
+    webhookUrl.select();
+    webhookUrl.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    
+    // Show tooltip or alert
+    var button = event.target.closest('button');
+    var originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(function() {
+        button.innerHTML = originalHtml;
+    }, 2000);
+}
+
+// Form validation
+$('#form-payment').on('submit', function(e) {
+    var testMode = $('#input-test-mode').is(':checked');
+    var errors = [];
+    
+    if (testMode) {
+        if (!$('#input-test-secret-key').val()) {
+            errors.push('{{ error_test_secret_key }}');
+        }
+        if (!$('#input-test-public-key').val()) {
+            errors.push('{{ error_test_public_key }}');
+        }
+    } else {
+        if (!$('#input-live-secret-key').val()) {
+            errors.push('{{ error_live_secret_key }}');
+        }
+        if (!$('#input-live-public-key').val()) {
+            errors.push('{{ error_live_public_key }}');
+        }
+    }
+    
+    if (errors.length > 0) {
+        e.preventDefault();
+        alert(errors.join('\n'));
+        return false;
+    }
+});
+
+// Toggle key fields based on test mode
+$('#input-test-mode').on('change', function() {
+    var testMode = $(this).is(':checked');
+    if (testMode) {
+        $('#input-test-secret-key, #input-test-public-key').closest('.row').show();
+        $('#input-live-secret-key, #input-live-public-key').closest('.row').hide();
+    } else {
+        $('#input-test-secret-key, #input-test-public-key').closest('.row').hide();
+        $('#input-live-secret-key, #input-live-public-key').closest('.row').show();
+    }
+}).trigger('change');
+</script>
+
+{{ footer }}

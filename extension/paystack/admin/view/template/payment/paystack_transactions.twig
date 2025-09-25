@@ -1,0 +1,282 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-secondary">
+          <i class="fas fa-reply"></i>
+        </a>
+      </div>
+      <h1>{{ heading_transactions }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-list"></i> {{ heading_transactions }}
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-bs-toggle="collapse" data-bs-target="#filter-transaction">
+            <i class="fas fa-filter"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="collapse" id="filter-transaction">
+          <div class="row mb-3">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="input-filter-reference">{{ entry_filter_reference }}</label>
+                <input type="text" name="filter_reference" value="{{ filter_reference }}" placeholder="{{ entry_filter_reference }}" id="input-filter-reference" class="form-control"/>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="input-filter-status">{{ entry_filter_status }}</label>
+                <select name="filter_status" id="input-filter-status" class="form-select">
+                  <option value="">{{ text_all }}</option>
+                  <option value="pending"{% if filter_status == 'pending' %} selected{% endif %}>{{ text_pending }}</option>
+                  <option value="success"{% if filter_status == 'success' %} selected{% endif %}>{{ text_success_status }}</option>
+                  <option value="failed"{% if filter_status == 'failed' %} selected{% endif %}>{{ text_failed }}</option>
+                  <option value="cancelled"{% if filter_status == 'cancelled' %} selected{% endif %}>{{ text_cancelled }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="input-filter-order-id">{{ entry_filter_order_id }}</label>
+                <input type="text" name="filter_order_id" value="{{ filter_order_id }}" placeholder="{{ entry_filter_order_id }}" id="input-filter-order-id" class="form-control"/>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <div class="btn-group d-block">
+                  <button type="button" id="button-filter" class="btn btn-primary">
+                    <i class="fas fa-search"></i> {{ button_filter }}
+                  </button>
+                  <button type="button" id="button-clear" class="btn btn-outline-secondary">
+                    <i class="fas fa-eraser"></i> {{ button_clear }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>{{ column_transaction_id }}</th>
+                <th>{{ column_order_id }}</th>
+                <th>{{ column_reference }}</th>
+                <th>{{ column_amount }}</th>
+                <th>{{ column_status }}</th>
+                <th>{{ column_customer }}</th>
+                <th>{{ column_payment_method }}</th>
+                <th>{{ column_date_added }}</th>
+                <th>{{ column_action }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if transactions %}
+                {% for transaction in transactions %}
+                  <tr>
+                    <td>{{ transaction.transaction_id }}</td>
+                    <td>
+                      {% if transaction.order_id %}
+                        <a href="{{ order_url }}{{ transaction.order_id }}" target="_blank">
+                          #{{ transaction.order_id }}
+                        </a>
+                      {% else %}
+                        -
+                      {% endif %}
+                    </td>
+                    <td>
+                      <code>{{ transaction.reference }}</code>
+                    </td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>
+                      {% if transaction.status == 'success' %}
+                        <span class="badge bg-success">{{ text_success_status }}</span>
+                      {% elseif transaction.status == 'pending' %}
+                        <span class="badge bg-warning">{{ text_pending }}</span>
+                      {% elseif transaction.status == 'failed' %}
+                        <span class="badge bg-danger">{{ text_failed }}</span>
+                      {% elseif transaction.status == 'cancelled' %}
+                        <span class="badge bg-secondary">{{ text_cancelled }}</span>
+                      {% else %}
+                        <span class="badge bg-light text-dark">{{ transaction.status }}</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ transaction.customer_email }}</td>
+                    <td>
+                      {% if transaction.payment_method %}
+                        <span class="badge bg-info">{{ transaction.payment_method }}</span>
+                      {% else %}
+                        -
+                      {% endif %}
+                    </td>
+                    <td>{{ transaction.created_at }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <a href="{{ transaction.view }}" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-sm btn-info">
+                          <i class="fas fa-eye"></i>
+                        </a>
+                        {% if transaction.status == 'success' %}
+                          <button type="button" data-transaction-id="{{ transaction.transaction_id }}" data-bs-toggle="tooltip" title="{{ button_refund }}" class="btn btn-sm btn-warning btn-refund">
+                            <i class="fas fa-undo"></i>
+                          </button>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9" class="text-center">{{ text_no_results }}</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-6 text-start">{{ pagination }}</div>
+          <div class="col-sm-6 text-end">{{ results }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Refund Modal -->
+<div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="refundModalLabel">{{ text_refund }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-refund">
+        <div class="modal-body">
+          <input type="hidden" name="transaction_id" id="refund-transaction-id">
+          <div class="mb-3">
+            <label for="refund-amount" class="form-label">{{ entry_refund_amount }}</label>
+            <input type="number" step="0.01" name="amount" id="refund-amount" class="form-control" placeholder="0.00">
+            <div class="form-text">{{ help_refund_amount }}</div>
+          </div>
+          <div class="mb-3">
+            <label for="refund-reason" class="form-label">{{ entry_refund_reason }}</label>
+            <textarea name="reason" id="refund-reason" class="form-control" rows="3" placeholder="Enter refund reason..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ button_cancel }}</button>
+          <button type="submit" class="btn btn-warning">
+            <i class="fas fa-undo"></i> {{ button_process_refund }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Filter functionality
+  $('#button-filter').on('click', function() {
+    var url = '{{ filter_url }}';
+    var filter_reference = $('input[name="filter_reference"]').val();
+    var filter_status = $('select[name="filter_status"]').val();
+    var filter_order_id = $('input[name="filter_order_id"]').val();
+    
+    if (filter_reference) {
+      url += '&filter_reference=' + encodeURIComponent(filter_reference);
+    }
+    
+    if (filter_status) {
+      url += '&filter_status=' + encodeURIComponent(filter_status);
+    }
+    
+    if (filter_order_id) {
+      url += '&filter_order_id=' + encodeURIComponent(filter_order_id);
+    }
+    
+    location = url;
+  });
+  
+  // Clear filters
+  $('#button-clear').on('click', function() {
+    location = '{{ filter_url }}';
+  });
+  
+  // Enter key filter
+  $('#filter-transaction input').on('keydown', function(e) {
+    if (e.which == 13) {
+      $('#button-filter').trigger('click');
+    }
+  });
+  
+  // Refund functionality
+  $('.btn-refund').on('click', function() {
+    var transactionId = $(this).data('transaction-id');
+    $('#refund-transaction-id').val(transactionId);
+    $('#refundModal').modal('show');
+  });
+  
+  // Process refund
+  $('#form-refund').on('submit', function(e) {
+    e.preventDefault();
+    
+    var form = $(this);
+    var submitBtn = form.find('button[type="submit"]');
+    var originalText = submitBtn.html();
+    
+    // Disable submit button
+    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+    
+    $.ajax({
+      url: 'index.php?route=extension/paystack/payment/paystack.refund&user_token={{ user_token }}',
+      type: 'POST',
+      data: form.serialize(),
+      dataType: 'json',
+      success: function(json) {
+        if (json.success) {
+          $('#refundModal').modal('hide');
+          
+          // Show success message
+          $('<div class="alert alert-success alert-dismissible fade show"><i class="fas fa-check-circle"></i> ' + json.success + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>').prependTo('#content .container-fluid');
+          
+          // Reload page after 2 seconds
+          setTimeout(function() {
+            location.reload();
+          }, 2000);
+        } else {
+          // Show error message
+          $('<div class="alert alert-danger alert-dismissible fade show"><i class="fas fa-exclamation-triangle"></i> ' + (json.error || 'Refund failed') + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>').prependTo('.modal-body');
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        $('<div class="alert alert-danger alert-dismissible fade show"><i class="fas fa-exclamation-triangle"></i> Error: ' + thrownError + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>').prependTo('.modal-body');
+      },
+      complete: function() {
+        submitBtn.prop('disabled', false).html(originalText);
+      }
+    });
+  });
+  
+  // Clear modal on close
+  $('#refundModal').on('hidden.bs.modal', function() {
+    $('#form-refund')[0].reset();
+    $('.alert', this).remove();
+  });
+});
+</script>
+
+{{ footer }}

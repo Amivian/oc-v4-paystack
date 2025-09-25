@@ -1,0 +1,458 @@
+<div class="paystack-payment-container">
+  {% if error %}
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i> {{ error }}
+    </div>
+  {% else %}
+    <div class="payment-header">
+      <h4>{{ heading_title }}</h4>
+      <p class="text-muted">{{ text_secure_payment }}</p>
+    </div>
+
+    <div class="payment-details">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="payment-info">
+            <h5>{{ text_payment_method }}</h5>
+            <p>{{ text_accepted_cards }}</p>
+            
+            <div class="amount-display">
+              <div class="d-flex justify-content-between">
+                <span>{{ text_amount }}:</span>
+                <span class="fw-bold">{{ currency }}{{ "%.2f"|format(amount) }}</span>
+              </div>
+              {% if transaction_fee > 0 %}
+                <div class="d-flex justify-content-between text-muted">
+                  <span>{{ text_transaction_fee }}:</span>
+                  <span>{{ currency }}{{ "%.2f"|format(transaction_fee) }}</span>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-content-between fw-bold">
+                  <span>{{ text_total_amount }}:</span>
+                  <span>{{ currency }}{{ "%.2f"|format(amount + transaction_fee) }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="security-badges">
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-lock text-success me-2"></i>
+              <small>{{ security_ssl }}</small>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-shield-alt text-success me-2"></i>
+              <small>{{ security_pci }}</small>
+            </div>
+            <div class="d-flex align-items-center">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <small>{{ security_safe }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <h5>{{ help_payment_methods }}</h5>
+      <div class="row">
+        {% for method in payment_methods %}
+          {% if method == 'card' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="card">
+                <i class="fas fa-credit-card fa-2x text-primary"></i>
+                <h6>{{ text_pay_with_card }}</h6>
+                <p class="small">{{ desc_card_payment }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if method == 'bank' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="bank">
+                <i class="fas fa-university fa-2x text-success"></i>
+                <h6>{{ text_pay_with_bank }}</h6>
+                <p class="small">{{ desc_bank_payment }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if method == 'ussd' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="ussd">
+                <i class="fas fa-mobile-alt fa-2x text-info"></i>
+                <h6>{{ text_pay_with_ussd }}</h6>
+                <p class="small">{{ desc_ussd_payment }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if method == 'qr' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="qr">
+                <i class="fas fa-qrcode fa-2x text-warning"></i>
+                <h6>{{ text_pay_with_qr }}</h6>
+                <p class="small">{{ desc_qr_payment }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if method == 'bank_transfer' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="transfer">
+                <i class="fas fa-exchange-alt fa-2x text-secondary"></i>
+                <h6>{{ text_pay_with_transfer }}</h6>
+                <p class="small">{{ desc_transfer_payment }}</p>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if method == 'mobile_money' %}
+            <div class="col-md-4 mb-3">
+              <div class="payment-method-card" data-method="mobile_money">
+                <i class="fas fa-wallet fa-2x text-primary"></i>
+                <h6>{{ text_mobile_money }}</h6>
+                <p class="small">{{ desc_mobile_money }}</p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="payment-actions">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="payment-reference">
+          <small class="text-muted">{{ text_reference }}: {{ reference }}</small>
+        </div>
+        <div class="payment-buttons">
+          <button type="button" id="button-confirm" class="btn btn-primary btn-lg">
+            <i class="fas fa-lock me-2"></i>{{ button_confirm }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-footer">
+      <div class="text-center">
+        <small class="text-muted">{{ footer_powered_by }}</small>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentModalLabel">{{ text_processing }}</h5>
+      </div>
+      <div class="modal-body text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">{{ text_loading }}</span>
+        </div>
+        <p>{{ text_please_wait }}</p>
+        <p class="text-muted">{{ info_payment_processing }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.paystack-payment-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.payment-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.payment-details {
+  margin-bottom: 30px;
+}
+
+.amount-display {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.security-badges {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.payment-method-card {
+  text-align: center;
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.payment-method-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0,123,255,0.1);
+  transform: translateY(-2px);
+}
+
+.payment-method-card.selected {
+  border-color: #007bff;
+  background-color: #f8f9ff;
+}
+
+.payment-method-card i {
+  margin-bottom: 10px;
+}
+
+.payment-method-card h6 {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.payment-method-card p {
+  margin-bottom: 0;
+  color: #6c757d;
+}
+
+.payment-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.payment-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.payment-reference {
+  font-family: 'Courier New', monospace;
+}
+
+#button-confirm {
+  min-width: 200px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#button-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-processing {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-processing::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@media (max-width: 768px) {
+  .paystack-payment-container {
+    padding: 15px;
+  }
+  
+  .payment-method-card {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .payment-actions {
+    text-align: center;
+  }
+  
+  .payment-actions .d-flex {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  #button-confirm {
+    width: 100%;
+  }
+}
+</style>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  var selectedMethod = 'card'; // Default payment method
+  
+  // Payment method selection
+  $('.payment-method-card').on('click', function() {
+    $('.payment-method-card').removeClass('selected');
+    $(this).addClass('selected');
+    selectedMethod = $(this).data('method');
+  });
+  
+  // Select first available method by default
+  $('.payment-method-card').first().addClass('selected');
+  
+  // Payment confirmation
+  $('#button-confirm').on('click', function() {
+    var button = $(this);
+    
+    // Disable button and show loading state
+    button.prop('disabled', true).addClass('btn-processing');
+    button.html('<i class="fas fa-spinner fa-spin me-2"></i>{{ text_processing }}');
+    
+    // Show processing modal
+    $('#paymentModal').modal('show');
+    
+    // Initialize Paystack payment
+    var handler = PaystackPop.setup({
+      key: '{{ public_key }}',
+      email: '{{ email }}',
+      amount: {{ (amount * 100)|round }}, // Amount in kobo
+      currency: '{{ currency }}',
+      ref: '{{ reference }}',
+      firstname: '{{ first_name }}',
+      lastname: '{{ last_name }}',
+      phone: '{{ phone }}',
+      channels: getSelectedChannels(),
+      callback: function(response) {
+        // Payment successful
+        $('#paymentModal').modal('hide');
+        
+        // Confirm payment on server
+        $.ajax({
+          url: 'index.php?route=extension/paystack/payment/paystack.confirm',
+          type: 'POST',
+          data: {
+            reference: response.reference,
+            status: 'success'
+          },
+          dataType: 'json',
+          success: function(json) {
+            if (json.success) {
+              // Redirect to callback URL
+              window.location.href = '{{ callback_url }}&reference=' + response.reference;
+            } else {
+              showError(json.error || 'Payment confirmation failed');
+            }
+          },
+          error: function() {
+            showError('Payment confirmation failed. Please contact support.');
+          }
+        });
+      },
+      onClose: function() {
+        // Payment cancelled
+        $('#paymentModal').modal('hide');
+        resetButton();
+        showError('{{ error_payment_cancelled }}');
+      }
+    });
+    
+    // Open payment popup
+    handler.openIframe();
+  });
+  
+  function getSelectedChannels() {
+    var channels = [];
+    var methodMapping = {
+      'card': ['card'],
+      'bank': ['bank'],
+      'ussd': ['ussd'],
+      'qr': ['qr'],
+      'transfer': ['bank_transfer'],
+      'mobile_money': ['mobile_money']
+    };
+    
+    if (methodMapping[selectedMethod]) {
+      channels = methodMapping[selectedMethod];
+    } else {
+      channels = ['card']; // Default fallback
+    }
+    
+    return channels;
+  }
+  
+  function resetButton() {
+    var button = $('#button-confirm');
+    button.prop('disabled', false).removeClass('btn-processing');
+    button.html('<i class="fas fa-lock me-2"></i>{{ button_confirm }}');
+  }
+  
+  function showError(message) {
+    // Remove existing alerts
+    $('.alert').remove();
+    
+    // Show error alert
+    var alert = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+      '<i class="fas fa-exclamation-triangle me-2"></i>' + message +
+      '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+      '</div>');
+    
+    $('.paystack-payment-container').prepend(alert);
+    
+    // Auto-hide after 5 seconds
+    setTimeout(function() {
+      alert.alert('close');
+    }, 5000);
+    
+    // Scroll to top to show error
+    $('html, body').animate({
+      scrollTop: $('.paystack-payment-container').offset().top - 20
+    }, 500);
+  }
+  
+  // Handle page visibility change (for mobile apps)
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+      // Page became visible again, check if we need to verify payment
+      var urlParams = new URLSearchParams(window.location.search);
+      var reference = urlParams.get('reference');
+      
+      if (reference && reference === '{{ reference }}') {
+        // Verify payment status
+        window.location.href = '{{ callback_url }}&reference=' + reference;
+      }
+    }
+  });
+  
+  // Auto-refresh payment methods if configuration changes
+  setInterval(function() {
+    // This could be used to check for real-time updates
+    // For now, we'll keep it simple
+  }, 30000);
+});
+
+// Prevent multiple form submissions
+window.addEventListener('beforeunload', function(e) {
+  if ($('#button-confirm').prop('disabled')) {
+    e.preventDefault();
+    e.returnValue = '{{ info_payment_processing }}';
+    return e.returnValue;
+  }
+});
+</script>
