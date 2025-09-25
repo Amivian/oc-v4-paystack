@@ -238,18 +238,18 @@ Enable debug mode in the extension settings to log detailed information:
 
 ### Developer
 - **Name**: Vivian Akpoke
-- **Email**: vivian.akpoke@example.com
-- **GitHub**: https://github.com/vivianakpoke
-- **Repository**: https://github.com/vivianakpoke/paystack-opencart4
-- **Issues**: https://github.com/vivianakpoke/paystack-opencart4/issues
+- **Email**: amiviann@gmail.com
+- **GitHub**: https://github.com/Amivian
+- **Repository**: https://github.com/Amivian/oc-v4-paystack.git     
+- **Issues**: https://github.com/Amivian/oc-v4-paystack.git/issues
 
 ### Documentation
 - [Paystack Documentation](https://paystack.com/docs)
 - [OpenCart Documentation](https://docs.opencart.com)
-- [Extension Documentation](https://github.com/vivianakpoke/paystack-opencart4)
+- [Extension Documentation](https://github.com/Amivian/oc-v4-paystack.git   )
 
 ### Reporting Issues
-When reporting issues, please create an issue on GitHub: https://github.com/vivianakpoke/paystack-opencart4/issues
+When reporting issues, please create an issue on GitHub: https://github.com/Amivian/oc-v4-paystack.git/issues
 
 Please include:
 1. OpenCart version
@@ -262,7 +262,7 @@ Please include:
 
 We welcome contributions! Please follow these guidelines:
 
-1. **Fork** the repository at https://github.com/vivianakpoke/paystack-opencart4
+1. **Fork** the repository at https://github.com/Amivian/oc-v4-paystack.git     
 2. **Create** a feature branch
 3. **Make** your changes
 4. **Test** thoroughly
@@ -271,7 +271,7 @@ We welcome contributions! Please follow these guidelines:
 ### Development Setup
 ```bash
 # Clone repository
-git clone https://github.com/vivianakpoke/paystack-opencart4.git
+git clone https://github.com/Amivian/oc-v4-paystack.git     .git
 
 # Install dependencies
 composer install
@@ -304,8 +304,8 @@ This extension is provided "as is" without warranty of any kind. Use at your own
 
 **Developed by Vivian Akpoke**
 
-- GitHub: https://github.com/vivianakpoke
-- Email: vivian.akpoke@example.com
-- Repository: https://github.com/vivianakpoke/paystack-opencart4
+- GitHub: https://github.com/Amivian
+- Email: amiviann@gmail.com
+- Repository: https://github.com/Amivian/oc-v4-paystack.git     
 
 For Paystack API documentation, visit [paystack.com/docs](https://paystack.com/docs)

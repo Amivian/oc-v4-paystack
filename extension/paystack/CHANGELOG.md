@@ -144,13 +144,13 @@ For detailed installation and configuration instructions, please refer to the RE
 
 For support and questions:
 - **Developer**: Vivian Akpoke
-- **Email**: vivian.akpoke@example.com
-- **GitHub**: https://github.com/vivianakpoke/paystack-opencart4
-- **Issues**: https://github.com/vivianakpoke/paystack-opencart4/issues
+- **Email**: amiviann@gmail.com
+- **GitHub**: https://github.com/Amivian/oc-v4-paystack.git  
+- **Issues**: https://github.com/Amivian/oc-v4-paystack.git/issues
 
 ## Contributing
 
-We welcome contributions! Please read our contributing guidelines and submit pull requests to our GitHub repository at https://github.com/vivianakpoke/paystack-opencart4
+We welcome contributions! Please read our contributing guidelines and submit pull requests to our GitHub repository at https://github.com/Amivian/oc-v4-paystack.git  
 
 ## License
 
